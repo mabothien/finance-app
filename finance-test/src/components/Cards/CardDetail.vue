@@ -3,29 +3,9 @@
   import { computed, ref, watch} from 'vue'
   export default {
     setup() {
-      let isFreeze = ref(false)
+      const isFreeze = ref(false)
       const isCancel = ref(false)
       const freezeTitle = computed(() => !isFreeze.value ? 'Freeze card' : 'unFreeze card')
-      let menus = ref([
-        {
-          id:2,
-          icon: '/assets/images/Spend_limit.svg',
-          title:'Set spend limit',
-          active: false
-        },
-        {
-          id:3,
-          icon: '/assets/images/GPay.svg',
-          title:'Add to GPay',
-          active: false
-        },
-        {
-          id:4,
-          icon: '/assets/images/Replace_card.svg',
-          title:'Replace card',
-          active: false
-        }
-      ])
       let cardGroup = ref([
         {
           type: 'detail',
@@ -105,22 +85,12 @@
       }
 
       const onFreezeCard = () => {
-        return isFreeze = !isFreeze
+        return isFreeze.value = !isFreeze.value
       }
       const onCancelCard = () => {
-        return isFreeze = !isFreeze
+        return isCancel.value = !isCancel.value
       }
 
-      const changeStatus = (item) => {
-        menus.value.map((i) =>{
-          if (i.id == item.id && i.active) {
-            i.active = false
-            return
-          }
-          i.active = i.id == item.id
-        })
-        
-      }
       return {
         cardGroup,
         enter,
@@ -130,9 +100,7 @@
         onFreezeCard,
         onCancelCard,
         isCancel,
-        menus,
         freezeTitle,
-        changeStatus
       }
     },
      
@@ -149,10 +117,22 @@
             <span class="nav-text">{{freezeTitle}}</span>
           </a>
         </li>
-        <li v-for="item in menus" :key="item.id" :class="{'active': item.active}">
-          <a href="javascript:void(0)" @click="changeStatus(item)">
-            <img :src="item.icon">
-            <span class="nav-text">{{item.title}}</span>
+        <li>
+          <a href="javascript:void(0)">
+            <img src="@/assets/images/Spend_limit.svg">
+            <span class="nav-text">Set spend limit</span>
+          </a>
+        </li>
+        <li>
+          <a href="javascript:void(0)">
+            <img src="@/assets/images/GPay.svg">
+            <span class="nav-text">Add to GPay</span>
+          </a>
+        </li>
+        <li>
+          <a href="javascript:void(0)">
+            <img src="@/assets/images/Replace_card.svg">
+            <span class="nav-text">Replace card</span>
           </a>
         </li>
         <li :class="{'active': isCancel}">
