@@ -4,6 +4,7 @@ import { Pagination } from "swiper";
 import { useStore } from 'vuex'
 import { ref, reactive, computed } from 'vue'
 import CreateCardModal from '@/components/Modal/CreateCardModal.vue'
+import getCards from '../../composables/getCards'
 import "swiper/css/pagination";
 import 'swiper/css';
 export default {
@@ -14,32 +15,19 @@ export default {
   },
   setup() {
     const nameCard = ref('')
-    const cards = reactive([
-      {
-        name: 'Tran Duy Long',
-        number: '123412341234',
-        endDate: '12/20',
-        cvv: 606
-      },
-      {
-        name: 'Tran Van Thanh',
-        number: '9878983738',
-        endDate: '12/22',
-        cvv: 445
-      },
-      {
-        name: 'Nguyen Van Binh',
-        number: '12348754567',
-        endDate: '12/23',
-        cvv: 604
-      }
-    ]);
+    
+    // Call Api
+    const { cards, load } = getCards()
+    load()
+
+    //Show/hide modal
     const store = useStore()
     const showModal = computed(() => store.state.modal.showing)
     const closeModal = () => {
       store.dispatch('modal/setModal', false)
     }
-
+    
+    // Event Add new Card
     const getRandom = (length) => {
      return Math.floor(Math.pow(10, length-1) + Math.random() * 9 * Math.pow(10, length-1))
     }
@@ -58,19 +46,13 @@ export default {
       })
       store.dispatch('modal/setModal', false)
     }
-    
-    const onSwiper = (swiper) => {  
-      console.log(swiper);
-    };
-    const onSlideChange = () => {
-      console.log('slide change');
-    };
+
+    // Event open create new card modal
     const addNewCard = () => {
       store.dispatch('modal/setModal', true)
     }
+
     return {
-      onSwiper,
-      onSlideChange,
       showModal,
       closeModal,
       addNewCard,
@@ -123,10 +105,8 @@ export default {
         dynamicBullets: true,
       }"
       :modules="modules"
-      @swiper="onSwiper"
-      @slideChange="onSlideChange"
     >
-      <swiper-slide v-for="item in cards" :key="item.id">
+      <swiper-slide v-for="item in cards" :key="item.id" :class="{'opacity-50' : item.isFreeze}">
         <div class="header__cards">
           <div class="card_header flex w-48 justify-center"> 
             <img class="card_icon_eye" src="@/assets/images/remove_red_eye-24px.svg">
@@ -152,77 +132,24 @@ export default {
           </div>
         </div>
       </swiper-slide>
-      <swiper-slide>
-        <div class="header__cards">
-          <div class="card_header flex w-48 justify-center"> 
-            <img class="card_icon_eye" src="@/assets/images/remove_red_eye-24px.svg">
-            <span>Show card number</span> 
-          </div>
-          <div class="card drop-shadow-lg rounded-xl">
-            <div class="card_body flex flex-col">
-              <div class="flex justify-end card_icon">
-                <img src="@/assets/images/logo.svg">
-              </div>
-              <div class="card_name">
-                Mark Henry
-              </div>
-              <div class="card_number">**** **** **** 2020</div>
-              <div class="flex gap-4 card_date_wrapper">
-                <span class="card_date">Thru: 12/20</span>
-                <span class="card_cvv">CVV: </span><span class="card_cvv_code">***</span>
-              </div>
-              <div class="flex justify-end card_logo_visa">
-                <img src="@/assets/images/Visa_Logo.svg">
-              </div>
-            </div>
-          </div>
-        </div>
-      </swiper-slide>
-      <swiper-slide>
-        <div class="header__cards">
-          <div class="card_header flex w-48 justify-center"> 
-            <img class="card_icon_eye" src="@/assets/images/remove_red_eye-24px.svg">
-            <span>Show card number</span> 
-          </div>
-          <div class="card drop-shadow-lg rounded-xl">
-            <div class="card_body flex flex-col">
-              <div class="flex justify-end card_icon">
-                <img src="@/assets/images/logo.svg">
-              </div>
-              <div class="card_name">
-                Mark Henry
-              </div>
-              <div class="card_number">**** **** **** 2020</div>
-              <div class="flex gap-4 card_date_wrapper">
-                <span class="card_date">Thru: 12/20</span>
-                <span class="card_cvv">CVV: </span><span class="card_cvv_code">***</span>
-              </div>
-              <div class="flex justify-end card_logo_visa">
-                <img src="@/assets/images/Visa_Logo.svg">
-              </div>
-            </div>
-          </div>
-        </div>
-      </swiper-slide>
     </swiper>
     <Teleport to="body">
-    <!-- use the modal component, pass in the prop -->
-    <CreateCardModal :show="showModal" @close="closeModal" @add="addCard">
-      <template #header>
-        <h3>Create new card</h3>
-      </template>
-      <template #body>
-        <div class="mt-5 md:col-span-2">
-          <form novalidate>
-            <div class="col-span-12">
-              <label for="first-name" class="block text-sm font-medium text-gray-700">Card Name</label>
-              <input v-model="nameCard" type="text" name="first-name" id="first-name" class="w-full border-solid border border-slate-300 p-1">
-            </div>
-          </form>
-        </div>
-      </template>
-    </CreateCardModal>
-  </Teleport>
+      <CreateCardModal :show="showModal" @close="closeModal" @add="addCard">
+        <template #header>
+          <h3>Create new card</h3>
+        </template>
+        <template #body>
+          <div class="mt-5 md:col-span-2">
+            <form novalidate>
+              <div class="col-span-12">
+                <label for="first-name" class="block text-sm font-medium text-gray-700">Card Name</label>
+                <input v-model="nameCard" type="text" name="first-name" id="first-name" class="w-full border-solid border border-slate-300 p-1">
+              </div>
+            </form>
+          </div>
+        </template>
+      </CreateCardModal>
+    </Teleport>
   </div>
 </template>
 <style lang="scss">

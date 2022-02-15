@@ -1,0 +1,25 @@
+{
+  "cards": [
+    {
+      "name": "Tran Duy Long",
+      "number": "123412341234",
+      "endDate": "12/20",
+      "isFreeze": false,
+      "cvv": 606
+    },
+    {
+      "name": "Tran Van Thanh",
+      "number": "9878983738",
+      "endDate": "12/22",
+      "isFreeze": false,
+      "cvv": 445
+    },
+    {
+      "name": "Nguyen Van Binh",
+      "number": "12348754567",
+      "endDate": "12/23",
+      "isFreeze": true,
+      "cvv": 604
+    }
+  ]
+}

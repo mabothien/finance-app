@@ -21,7 +21,11 @@ npm install
 ```sh
 npm run dev
 ```
+### Start json server for dummy data
 
+```sh
+npx json-server --watch data/db.json --port 4000
+```
 ### Compile and Minify for Production
 
 ```sh

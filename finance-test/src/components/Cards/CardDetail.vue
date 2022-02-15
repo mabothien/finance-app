@@ -1,33 +1,162 @@
-<template>
+
+<script>
+  import { computed, ref, watch} from 'vue'
+  export default {
+    setup() {
+      let isFreeze = ref(false)
+      const isCancel = ref(false)
+      const freezeTitle = computed(() => !isFreeze.value ? 'Freeze card' : 'unFreeze card')
+      let menus = ref([
+        {
+          id:2,
+          icon: window.location.href+'src/assets/images/Spend_limit.svg',
+          title:'Set spend limit',
+          active: false
+        },
+        {
+          id:3,
+          icon: window.location.href+'src/assets/images/GPay.svg',
+          title:'Add to GPay',
+          active: false
+        },
+        {
+          id:4,
+          icon: window.location.href+'src/assets/images/Replace_card.svg',
+          title:'Replace card',
+          active: false
+        }
+      ])
+      let cardGroup = ref([
+        {
+          type: 'detail',
+          name: 'Card details',
+          cardDetail: [],
+          isVisible: false
+        },
+        {
+          type: 'transactions',
+          name: 'Recent transactions',
+          isVisible: true,
+          cardDetail: [
+           { 
+              name: 'Hamleys',
+              date: '20 May 2020',
+              type: 'Refund on debit card'
+            },
+            { 
+              name: 'Hamleys',
+              date: '20 May 2020',
+              type: 'Charged to debit card'
+            },
+            { 
+              name: 'Hamleys',
+              date: '20 May 2020',
+              type: 'Refund on debit card'
+            },
+            { 
+              name: 'Hamleys',
+              date: '20 May 2020',
+              type: 'Charged to debit card'
+            }
+          ]
+        }
+      ]);
+  
+      watch(cardGroup, (newValue, prevCount) => {
+       cardGroup = newValue
+      });
+  
+      const enter = (element) => {
+        const width = getComputedStyle(element).width;
+  
+        element.style.width = width;
+        element.style.position = 'absolute';
+        element.style.visibility = 'hidden';
+        element.style.height = 'auto';
+  
+        const height = getComputedStyle(element).height;
+  
+        element.style.width = null;
+        element.style.position = null;
+        element.style.visibility = null;
+        element.style.height = 0;
+  
+        getComputedStyle(element).height;
+  
+        requestAnimationFrame(() => {
+          element.style.height = height;
+        });
+      }
+  
+      const afterEnter = (element) =>{
+        element.style.height = 'auto';
+      }
+      
+      const leave = (element) => {
+        const height = getComputedStyle(element).height;
+        
+        element.style.height = height;
+  
+        getComputedStyle(element).height;
+  
+        requestAnimationFrame(() => {
+          element.style.height = 0;
+        });
+      }
+
+      const onFreezeCard = () => {
+        return isFreeze = !isFreeze
+      }
+      const onCancelCard = () => {
+        return isFreeze = !isFreeze
+      }
+
+      const changeStatus = (item) => {
+        menus.value.map((i) =>{
+          if (i.id == item.id && i.active) {
+            i.active = false
+            return
+          }
+          i.active = i.id == item.id
+        })
+        
+      }
+      return {
+        cardGroup,
+        enter,
+        afterEnter,
+        leave,
+        isFreeze,
+        onFreezeCard,
+        onCancelCard,
+        isCancel,
+        menus,
+        freezeTitle,
+        changeStatus
+      }
+    },
+     
+  }
+   
+  </script>
+  <template>
   <div class="cardDetail_container flex flex-col">
-    <div class="cardDetail__header srounded-t-3xl">
+    <div class="cardDetail__header rounded-t-3xl">
       <ul class="grow">
-        <li>
-          <a href="#">
+        <li :class="{'active': isFreeze}">
+          <a href="javascript:void(0)" @click="onFreezeCard()">
             <img src="@/assets/images/Freeze_card.svg">
-            <span class="nav-text">Freeze card</span>
+            <span class="nav-text">{{freezeTitle}}</span>
           </a>
         </li>
-        <li class="active">
-          <a href="#">
-            <img src="@/assets/images/Spend_limit.svg">
-            <span class="nav-text">Set spend limit</span>
+        <li v-for="item in menus" :key="item.id" :class="{'active': item.active}">
+          <a href="javascript:void(0)" @click="changeStatus(item)">
+            <img :src="item.icon">
+            <span class="nav-text">{{item.title}}</span>
           </a>
         </li>
-        <li>
-          <a href="#">
-            <img src="@/assets/images/GPay.svg">
-            <span class="nav-text">Add to GPay</span>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <img src="@/assets/images/Replace_card.svg">
-            <span class="nav-text">Replace card</span>
-          </a>
-        </li>
-        <li>
-          <a href="#">
+        <li :class="{'active': isCancel}">
+          <a href="javascript:void(0)" @click="onCancelCard()">
             <img src="@/assets/images/Deactivate_card.svg">
             <span class="nav-text">Cancel card</span>
           </a>
@@ -82,101 +211,6 @@
     </div>
   </div>
 </template>
-
-<script>
-import { ref, watch} from 'vue'
-export default {
-  setup() {
-    let cardGroup = ref([
-      {
-        type: 'detail',
-        name: 'Card details',
-        cardDetail: [],
-        isVisible: false
-      },
-      {
-        type: 'transactions',
-        name: 'Recent transactions',
-        isVisible: true,
-        cardDetail: [
-         { 
-            name: 'Hamleys',
-            date: '20 May 2020',
-            type: 'Refund on debit card'
-          },
-          { 
-            name: 'Hamleys',
-            date: '20 May 2020',
-            type: 'Charged to debit card'
-          },
-          { 
-            name: 'Hamleys',
-            date: '20 May 2020',
-            type: 'Refund on debit card'
-          },
-          { 
-            name: 'Hamleys',
-            date: '20 May 2020',
-            type: 'Charged to debit card'
-          }
-        ]
-      }
-    ]);
-
-    watch(cardGroup, (newValue, prevCount) => {
-     cardGroup = newValue
-    });
-
-    const enter = (element) => {
-      const width = getComputedStyle(element).width;
-
-      element.style.width = width;
-      element.style.position = 'absolute';
-      element.style.visibility = 'hidden';
-      element.style.height = 'auto';
-
-      const height = getComputedStyle(element).height;
-
-      element.style.width = null;
-      element.style.position = null;
-      element.style.visibility = null;
-      element.style.height = 0;
-
-      getComputedStyle(element).height;
-
-      requestAnimationFrame(() => {
-        element.style.height = height;
-      });
-    }
-
-    const afterEnter = (element) =>{
-      element.style.height = 'auto';
-    }
-    
-    const leave = (element) => {
-      const height = getComputedStyle(element).height;
-      
-      element.style.height = height;
-
-      getComputedStyle(element).height;
-
-      requestAnimationFrame(() => {
-        element.style.height = 0;
-      });
-    }
-
-    return {
-      cardGroup,
-      enter,
-      afterEnter,
-      leave
-    }
-  },
-   
-}
- 
-</script>
-
 <style lang="scss">
 .accordion-collapse {
   transition: all 1s ease;
@@ -205,6 +239,11 @@ export default {
         flex-grow: 1;
         align-items: center;
         justify-content: center;
+        &.active {
+          span {
+            font-weight: bold;
+          }
+        }
         a {
           color: #0C365A;
           font-size: 10pt;
