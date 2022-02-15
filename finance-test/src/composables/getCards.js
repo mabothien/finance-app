@@ -4,7 +4,7 @@ const getCards = () => {
   const cards = ref([]);
   const load = async () => {
     try {
-      const data = await fetch('http://localhost:4000/cards',
+      const data = await fetch('https://finance-app123.herokuapp.com/cards',
       {
         method: 'get',
         headers: { 'Content-type': 'application/json' },
