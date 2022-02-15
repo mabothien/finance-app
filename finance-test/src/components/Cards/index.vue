@@ -26,7 +26,7 @@ export default {
     const closeModal = () => {
       store.dispatch('modal/setModal', false)
     }
-    
+
     // Event Add new Card
     const getRandom = (length) => {
      return Math.floor(Math.pow(10, length-1) + Math.random() * 9 * Math.pow(10, length-1))
@@ -115,7 +115,7 @@ export default {
           <div class="card drop-shadow-lg rounded-xl">
             <div class="card_body flex flex-col">
               <div class="flex justify-end card_icon">
-                <img src="@/assets/images/logo.svg">
+                <img src="@/assets/images/Logo.svg">
               </div>
               <div class="card_name">
                 {{item.name}}
