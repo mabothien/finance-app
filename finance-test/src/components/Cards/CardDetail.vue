@@ -9,19 +9,19 @@
       let menus = ref([
         {
           id:2,
-          icon: 'assets/images/Spend_limit.svg',
+          icon: '/assets/images/Spend_limit.svg',
           title:'Set spend limit',
           active: false
         },
         {
           id:3,
-          icon: 'assets/images/GPay.svg',
+          icon: '/assets/images/GPay.svg',
           title:'Add to GPay',
           active: false
         },
         {
           id:4,
-          icon: 'assets/images/Replace_card.svg',
+          icon: '/assets/images/Replace_card.svg',
           title:'Replace card',
           active: false
         }
